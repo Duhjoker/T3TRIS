@@ -13,6 +13,7 @@
 #include "tetris_mp3.h"
 #endif
 
+#include <Bounce.h>
 #include <XPT2046_Touchscreen.h>
 
 #include "blocks.h"
@@ -61,6 +62,17 @@ AudioOutputPWM      sndOut;           //xy=334,89
 AudioConnection     patchCord1(playSnd, 0, sndOut, 0);
 AudioConnection     patchCord2(playSnd, 1, sndOut, 1);
 #endif
+
+
+const int buttonLeft = 35; //left button
+Bounce ButtonLeft = Bounce(buttonLeft, 10);  // 10 ms debounce
+const int buttonRight = 17; //right button
+Bounce ButtonRight = Bounce(buttonRight, 10);  // 10 ms debounce
+const int buttonA = 21; // A button right
+Bounce ButtonA = Bounce(buttonA, 10);  // 10 ms debounce
+const int buttonB = 28; // B buttun down
+Bounce ButtonB = Bounce(buttonB, 10);  // 10 ms debounce
+
 
 #define SCREEN_BG   NAVY
 #define SPEED_START 300
@@ -121,6 +133,11 @@ void setup() {
   #if WITHSOUND
   AudioMemory(10);
 #endif
+
+  pinMode(buttonLeft, INPUT_PULLUP);
+    pinMode(buttonRight, INPUT_PULLUP);
+     pinMode(buttonA, INPUT_PULLUP);
+      pinMode(buttonB, INPUT_PULLUP);
 
 //color[0] is background, no gamma
   for (unsigned i=1; i < NUMCOLORS; i++) {
@@ -387,15 +404,21 @@ char controls() {
   TS_Point p = ts.getPoint();
   if (p.z < 400) return ('\0');
 
+ if (ButtonLeft.update());
+   if (ButtonRight.update());
+   if (ButtonA.update());
+   if (ButtonB.update());
+
   p.y = TS_MAXY - p.y;
   p.x = TS_MAXX - p.x;
   p.x = map(p.x, TS_MINX, TS_MAXX, 0, 3);
   p.y = map(p.y, TS_MINY, TS_MAXY, 0, 3);
 
-  if ((p.y < 1)  && (p.x > 1)) return ('d');
-  if ((p.y < 1)  && (p.x < 1)) return ('a');
-  if ((p.y >= 2) && (p.x < 1)) return ('s');
-  if ((p.y >= 2) && (p.x > 1)) return ('+');
+  if (ButtonLeft.fallingEdge()) return ('a');
+  if (ButtonRight.fallingEdge()) return ('d');
+  if (ButtonA.fallingEdge()) return ('s');
+  if (ButtonB.fallingEdge()) return ('+');
+
 
 #if 0
   tft.setFont(DroidSans_10);
