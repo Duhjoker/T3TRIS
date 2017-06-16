@@ -1,4 +1,4 @@
-T3TRIS Untouched
+T3TRIS Untouched for GameRIot DIY advanced gaming
 
 
 A Tetris-clone for Teensy 3 for ILI9341-Display thats been edited to work with GameRIot advanced gaming library and updated to work in landscape mode with buttons.
