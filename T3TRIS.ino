@@ -4,6 +4,9 @@
 #define WITHSOUND 0
 #define FRANKTFT 0
 
+#include "Arduino.h"
+#include "Print.h"
+
 #if WITHSOUND
 //#include <SD.h>
 #include <Wire.h>
